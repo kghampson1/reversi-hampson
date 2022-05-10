@@ -1,0 +1,30 @@
+{
+  "name": "reversi-hampson",
+  "version": "0.0.1",
+  "description": "This is a web version of the game reversi",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://kghampson1: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@github.com/kghampson1/reversi-hampson.git"
+  },
+  "keywords": [
+    "reversi",
+    "hampson",
+    "SOS",
+    "HCI",
+    "sendhelp"
+  ],
+  "author": "Kari Hampson (KG)",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/kghampson1/reversi-hampson/issues"
+  },
+  "homepage": "https://github.com/kghampson1/reversi-hampson#readme",
+  "dependencies": {
+    "node-static": "^0.7.11",
+    "socket.io": "^4.5.0"
+  }
+}
