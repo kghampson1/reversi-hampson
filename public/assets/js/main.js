@@ -30,7 +30,7 @@ socket.on('log', function (array) {
     console.log.apply(console, array);
 });
 
-function makeInviteButton() {
+function makeInviteButton(){
     let newHTML = "<button type ='button' class='btn btn-outline-primary'>Invite</button>";
     let newNode = $(newHTML);
     return newNode;
@@ -50,11 +50,11 @@ socket.on('join_room_response', (payload) => {
 
     /*If we are being notified our ouselves then ignore the message and the return*/
 
-    if (payload.socket_id === socket.id) {
+    if (payload.socket_id === socket.id){
         return;
     }
 
-    let domElements = $('.socket_' + payload.socket_id);
+    let domElements = $('.socket_'+payload.socket_id);
 
     /* If we are being repeat notified then return*/
 
@@ -75,20 +75,20 @@ socket.on('join_room_response', (payload) => {
     let nodeA = $("<div></div>");
     nodeA.addClass("row");
     nodeA.addClass("align-items-center");
-    nodeA.addClass("socket_" + payload.socket_id);
+    nodeA.addClass("socket_"+ payload.socket_id);
     nodeA.hide();
 
     let nodeB = $("<div></div>");
     nodeB.addClass("col");
     nodeB.addClass("text-end");
-    nodeB.addClass("socket_" + payload.socket_id);
-    nodeB.append('<h4>' + payload.username + '</h4>');
+    nodeB.addClass("socket_"+ payload.socket_id);
+    nodeB.append('<h4>'+ payload.username+'</h4>');
 
 
     let nodeC = $("<div></div>");
     nodeC.addClass("col");
     nodeC.addClass("text-start");
-    nodeC.addClass("socket_" + payload.socket_id);
+    nodeC.addClass("socket_"+ payload.socket_id);
     let buttonC = makeInviteButton();
     nodeC.append(buttonC);
 
@@ -116,13 +116,13 @@ socket.on('player_disconnected', (payload) => {
         return;
     }
 
-    if (payload.socket_id === socket.id) {
+    if(payload.socket_id === socket.id){
         return;
     }
 
-    let domElements = $('.socket_' + payload.socket_id);
-    if (domElements.length !== 0) {
-        domElements.hide("fade", 500);
+    let domElements = $('.socket_'+payload.socket_id);
+    if (domElements.length !== 0){
+        domElements.hide("fade",500);
     }
 
 
@@ -186,5 +186,4 @@ $(() => {
 
 
 });
-
 
