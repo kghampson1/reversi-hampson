@@ -65,7 +65,7 @@ socket.on('join_room_response', (payload) => {
     /* 
         <div class="row align-items-center">
             <div class="col text-end">
-                Oswaldo
+                Kari
             </div>
             <div class="col text-end">
                 <button type="button" class="btn btn-primary">Invite</button>
