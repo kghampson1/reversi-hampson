@@ -33,7 +33,7 @@ function makeInviteButton(socket_id) {
         let payload = {
             requested_user: socket_id
         }
-        console.log('**** Client log message, sending \'send_chat_message\' command: ' + JSON.stringify(request));
+        console.log('**** Client log message, sending \'invite\' command: ' + JSON.stringify(request));
         socket.emit('invite', payload);
     }
 
@@ -48,7 +48,7 @@ function makeInvitedButton() {
 }
 
 function makePlayButton() {
-    let newHTML = "<button type ='button' class='btn btn-secondary'>Play</button>";
+    let newHTML = "<button type ='button' class='btn btn-success'>Play</button>";
     let newNode = $(newHTML);
     return newNode;
 }
@@ -202,7 +202,9 @@ $(() => {
     request.username = username;
     console.log('**** Client log message, sending \'join_room\' command: ' + JSON.stringify(request));
     socket.emit('join_room', request);
+
     $("#lobbyTitle").html(username + "'s Lobby");
+
     $('#chatMessage').keypress(function (e) {
         let key = e.which;
         if (key == 13) { //the enter key
