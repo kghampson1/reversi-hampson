@@ -41,7 +41,7 @@ function makeInviteButton(socket_id) {
 }
 
 function makeInvitedButton(socket_id) {
-    let newHTML = "<button type ='button' class='btn btn-primary'>Invited</button>";
+    let newHTML = "<button type ='button' class='btn btn-outline-primary'>Invited</button>";
     let newNode = $(newHTML);
     newNode.click(() => {
         let payload = {
@@ -54,7 +54,7 @@ function makeInvitedButton(socket_id) {
     return newNode;
 }
 
-function makePlayButton() {
+function makePlayButton(socket_id) {
     let newHTML = "<button type ='button' class='btn btn-success'>Play</button>";
     let newNode = $(newHTML);
     newNode.click(() => {
