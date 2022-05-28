@@ -33,7 +33,7 @@ function makeInviteButton(socket_id) {
         let payload = {
             requested_user: socket_id
         }
-        console.log('**** Client log message, sending \'invite\' command: ' + JSON.stringify(request));
+        console.log('**** Client log message, sending \'invite\' command: ' + JSON.stringify(payload));
         socket.emit('invite', payload);
     }
 
@@ -78,7 +78,6 @@ socket.on('invited', (payload) => {
         console.log('Server did not send a payload');
         return;
     }
-
     if (payload.result === 'fail') {
         console.log(payload.message);
         return;
