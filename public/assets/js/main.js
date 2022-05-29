@@ -183,7 +183,7 @@ socket.on('join_room_response', (payload) => {
 
     /*Announcing in the chat that someone has arrived*/
 
-    let newHTML = '<p class=\'join_room_response\'>' + payload.username + ' joined the ' + payload.room + '. (There are ' + payload.count + ' users in this room)</p>';
+    let newHTML = '<p class=\'join_room_response\'>' + payload.username + ' joined the chatroom. (There are ' + payload.count + ' users in this room)</p>';
     let newNode = $(newHTML);
     newNode.hide();
 
@@ -268,6 +268,33 @@ socket.on('game_update', (payload) => {
     }
 
     /* Update my color */
+    if(socket.id === payload.game.player_white.socket) {
+        my_color = 'white';
+    } else if(socket.id === payload.game.player_black.socket) {
+        my_color = 'black';
+    } else {
+        window.location.href = 'lobby.html?username=' + username;
+        return;
+    }
+
+    if(my_color === 'white') {
+        $('#my_color').html('<h3 id="my_color">You are playing the white token</h3>');
+    } else if(my_color === 'dark') {
+        $('#my_color').html('<h3 id="my_color">You are playing the black token</h3>');
+    } else {
+        $('#my_color').html('<h3 id="my_color">Error: Unknown color token for play</h3>');
+    }
+
+    if(payload.game.whose_turn === 'white') {
+        $('#my_color').append('<h4> It is white token\'s turn.</h4>');
+    } else if(payload.game.whose_turn === 'black') {
+        $('#my_color').append('<h4> It is black token\'s turn.</h4>');
+    } else {
+        $('#my_color').append('<h4>Error: Unable to determine who\'s turn it is to play</h4>');
+    }
+
+    let lightsum = 0;
+    let darksum = 0;
 
     /* Animate changes to board */
     
@@ -311,30 +338,113 @@ socket.on('game_update', (payload) => {
                 
                 const t = Date.now();
                 $('#' + row + '_' + column).html('<img class="img-fluid" src="assets/images/' + graphic + '?time=' + t + '" alt="' + altTag + '" />');
+           
+            }
+            /* Set up interactivity */
+            $('#' + row + '_' + column).off('click');
+            $('#' + row + '_' + column).removeClass('hovered_over');
+            
+            if (payload.game.whose_turn === my_color) {
+                if (payload.game.legal_moves[row][column] === my_color.substr(0, 1)) {
+                    $('#' + row + '_' + column).addClass('hovered_over');
+                    $('#' + row + '_' + column).click(((r, c) => {
+                        return(() => {
+                            let payload = {
+                                row: r,
+                                column: c,
+                                color: my_color
+                            };
+                            console.log('**** Client log message, sending \'play_token\' command: ' + JSON.stringify(payload));
+                            socket.emit('play_token', payload);
+                        });
+                    })(row, column));
+                }
             }
         }
-
     }
+
+    clearInterval(interval_timer);
+    interval_timer = setInterval(((last_time) => {
+        return ( () => {
+            let d = new Date();
+            let elapsed_m = d.getTime() - last_time;
+            let minutes = Math.floor(elapsed_m / (60 * 1000));
+            let seconds = Math.floor((elapsed_m % (60 * 1000)) / 1000);
+            let total = minutes * 60 + seconds;
+            if (total > 100) {
+                total = 100;
+            }
+            $("#elapsed").css("width", total + "%").attr("aria-valuenow", total);
+            let timestring = "" + seconds;
+            timestring = timestring.padStart(2, '0');
+            timestring = minutes + ":" + timestring;
+            if (total < 100) {
+                $("#elapsed").html(timestring);
+            }
+            else {
+                $("#elapsed").html("Time's up!");
+            }
+        });
+    })(payload.game.last_move_time), 1000);
+
+    $('#lightsum').html(lightsum);
+    $('#darksum').html(darksum);
     old_board = board;
-})
+});
 
+socket.on('play_token_response', (payload) => {
+    if((typeof payload == 'undefined') || (payload === null)) {
+        console.log('Server did not send a payload');
+        return;
+    }
 
-/* Request to join chat room*/
-$(() => {
+    if (payload.result === 'fail') {
+        console.log(payload.message);
+        alert(payload.message);
+        return;
+    }
+});
+
+socket.on('game_over', (payload) => {
+    if((typeof payload == 'undefined') || (payload === null)) {
+        console.log('Server did not send a payload');
+        return;
+    }
+
+    if (payload.result === 'fail') {
+        console.log(payload.message);
+        return;
+    }
+
+    // Announce with a button to the lobby
+    let nodeA = $('<div id="game_over"></div>');
+    let nodeB = $('<h1>Game Over</h1>');
+    let nodeC = $('<h2>' + payload.who_won + ' won!</h2>');
+    let nodeD = $('<a href="lobby.html?username="' + username + ' class="btn btn-lg btn-success" role="button">Return to lobby</a>');
+    nodeA.append(nodeB);
+    nodeA.append(nodeC);
+    nodeA.append(nodeD);
+    nodeA.hide();
+    $('#game_over').replaceWith(nodeA);
+    nodeA.show("fade", 1000);
+});
+
+// Request to join the chat room
+$( () => {
     let request = {};
     request.room = chatRoom;
     request.username = username;
     console.log('**** Client log message, sending \'join_room\' command: ' + JSON.stringify(request));
     socket.emit('join_room', request);
 
-    $("#lobbyTitle").html(username + "'s Lobby");
+    $('#lobbyTitle').html(username + "'s Lobby");
+    $('#quit').html('<a href="lobby.html?username="' + username + ' class="btn btn-danger" role="button">Quit</a>');
 
-    $('#chatMessage').keypress(function (e) {
-        let key = e.which;
-        if (key == 13) { //the enter key
-            $('button[id = chatButton]').click();
+    $('#chatMessage').keypress(function (event) {
+        let key = event.which;
+        if (key === 13) {
+            $('button[id=chatButton]').click();
             return false;
         }
-    })
-
+    });
 });

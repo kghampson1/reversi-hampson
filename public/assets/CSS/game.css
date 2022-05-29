@@ -42,36 +42,3 @@ td.hovered_over:hover {
     background-image: url('/assets/images/hover.gif');
 }
 
-/* Custom classes not in demo videos */
-#playersPane {
-    padding-top: 20px;
-}
-.input-group {
-    margin-bottom: 20px;
-}
-.form-control {
-    border-color: #3A5A40;
-}
-.form-control:focus {
-    border-color: #577F57;
-    box-shadow: 0 0 0 0.25rem rgb(87 127 87 / 25%);
-}
-#chatButton {
-    background-color: #3A5A40;
-    border-color: #3A5A40;
-}
-#players div:not(:last-child) {
-    margin-bottom: 5px;
-}
-
-/* Bootstrap overrides */
-.btn-outline-primary {
-    border-color: #3A5A40 !important;
-    color: #3A5A40 !important;
-}
-
-.btn-outline-primary:active,
-.btn-outline-primary:hover {
-    background-color: #3A5A40 !important;
-    color: #FFF !important;
-}
