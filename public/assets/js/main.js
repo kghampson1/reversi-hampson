@@ -300,6 +300,11 @@ socket.on('game_update', (payload) => {
     
     for(let row = 0; row < 8; row++) {
         for(let column = 0; column < 8; column++) {
+            if(board[row][column] === 'w') {
+                whitesum++;
+            } else if(board[row][column] === 'b') {
+                blacksum++;
+            }
             /* Check to see if the server changed any space on the board */
             if(old_board[row][column] !== board[row][column]) {
                 let graphic = "";
@@ -362,6 +367,8 @@ socket.on('game_update', (payload) => {
             }
         }
     }
+    $('#whitesum').html(whitesum);
+    $('#blacksum').html(blacksum);
     old_board = board;
 })
 
