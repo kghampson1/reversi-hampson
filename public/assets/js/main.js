@@ -279,7 +279,7 @@ socket.on('game_update', (payload) => {
 
     if(my_color === 'white') {
         $('#my_color').html('<h3 id="my_color">You are playing the white token</h3>');
-    } else if(my_color === 'dark') {
+    } else if(my_color === 'black') {
         $('#my_color').html('<h3 id="my_color">You are playing the black token</h3>');
     } else {
         $('#my_color').html('<h3 id="my_color">Error: Unknown color token for play</h3>');
@@ -293,8 +293,8 @@ socket.on('game_update', (payload) => {
         $('#my_color').append('<h4>Error: Unable to determine who\'s turn it is to play</h4>');
     }
 
-    let lightsum = 0;
-    let darksum = 0;
+    let whitesum = 0;
+    let blacksum = 0;
 
     /* Animate changes to board */
     
@@ -387,8 +387,8 @@ socket.on('game_update', (payload) => {
         });
     })(payload.game.last_move_time), 1000);
 
-    $('#lightsum').html(lightsum);
-    $('#darksum').html(darksum);
+    $('#whitesum').html(whitesum);
+    $('#blacksum').html(blacksum);
     old_board = board;
 });
 
