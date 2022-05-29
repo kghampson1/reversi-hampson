@@ -142,6 +142,7 @@ io.on('connection', (socket) => {
             };
         });
 
+
         socket.on('invite', (payload) => {
             serverLog('Server received a command', '\'invite\'', JSON.stringify(payload));
             // Check that the data coming from the client is good
@@ -457,3 +458,58 @@ io.on('connection', (socket) => {
 
         });
     })})
+
+    /*****************************************/
+    /* Code related to game state */
+    let games = [];
+
+    function create_new_game() {
+            let new_game= {};
+            new_game.player_white = {};
+            new_game.player_white.socket = "";
+            new_game.player_white.username = "";
+            new_game.player_black = {};
+            new_game.player_black.socket = "";
+            new_game.player_black.username = "";
+
+            var d = new Date();
+            new_game.last_move_time = d.getTime();
+
+            new_game.whose_turn = 'white';
+            new_game.board = [
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', 'w', 'b', ' ', ' ', ' '],
+                [' ', ' ', ' ', 'b', 'w', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+            ];
+            
+            new_game.legal_moves = calculate_legal_moves ('d', new_game.board);
+
+            return new_game;
+
+    }
+
+    function send_game_update(socket, game_id, message) {
+
+
+    /*Make sure that only 2 people are in the room*/
+    /* Assign this socket a color*/
+    /* Check to see if game is over */
+    /* Check to see if a game with game_id exists */
+    if((typeof games[game_id] == 'undefined') || (games[game_id] === null)) {
+        console.log("No game exists with game_id:" + game_id + ". Making a new game for " + socket.id);
+        games[game_id] = create_new_game();
+    }
+    /* Send game update */
+    let payload = {
+        result: 'success',
+        game_id: game_id,
+        game: games[game_id],
+        message: message
+    }
+    io.of("/").to(game_id).emit('game_update', payload);
+}
