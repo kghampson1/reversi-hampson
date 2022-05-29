@@ -20,7 +20,7 @@ chatRoom = decodeURI(getIRIParameterValue('game_id'));
 if ((typeof chatRoom == 'undefined') || (chatRoom === null) || (chatRoom === 'null')) {
     chatRoom = 'Lobby';
 }
-/* Set up the   socket.io connection to the server*/
+/* Set up the socket.io connection to the server*/
 let socket = io();
 socket.on('log', function (array) {
     console.log.apply(console, array);
@@ -307,28 +307,28 @@ socket.on('game_update', (payload) => {
                 if((old_board[row][column] === '?') && (board[row][column] === ' ')) {
                     graphic = "empty.gif";
                     altTag = "empty space";
-                } else if((old_board[row][column] === '?') && (board[row][column] === 'l')) {
+                } else if((old_board[row][column] === '?') && (board[row][column] === 'w')) {
                     graphic = "empty_to_white.gif";
                     altTag = "white token";
-                } else if((old_board[row][column] === '?') && (board[row][column] === 'd')) {
+                } else if((old_board[row][column] === '?') && (board[row][column] === 'b')) {
                     graphic = "empty_to_black.gif";
                     altTag = "black token";
-                } else if((old_board[row][column] === ' ') && (board[row][column] === 'l')) {
+                } else if((old_board[row][column] === ' ') && (board[row][column] === 'w')) {
                     graphic = "empty_to_white.gif";
                     altTag = "white token";
-                } else if((old_board[row][column] === ' ') && (board[row][column] === 'd')) {
+                } else if((old_board[row][column] === ' ') && (board[row][column] === 'b')) {
                     graphic = "empty_to_black.gif";
                     altTag = "black token";
                 } else if((old_board[row][column] === 'w') && (board[row][column] === ' ')) {
                     graphic = "white-to-empty.gif";
                     altTag = "empty space";
-                } else if((old_board[row][column] === 'd') && (board[row][column] === ' ')) {
+                } else if((old_board[row][column] === 'b') && (board[row][column] === ' ')) {
                     graphic = "black-to-empty.gif";
                     altTag = "empty space";
-                } else if((old_board[row][column] === 'l') && (board[row][column] === 'd')) {
+                } else if((old_board[row][column] === 'w') && (board[row][column] === 'b')) {
                     graphic = "white-to-black.gif";
                     altTag = "black token";
-                } else if((old_board[row][column] === 'd') && (board[row][column] === 'l')) {
+                } else if((old_board[row][column] === 'b') && (board[row][column] === 'w')) {
                     graphic = "black-to-white.gif";
                     altTag = " token";
                 } else {
@@ -362,55 +362,25 @@ socket.on('game_update', (payload) => {
             }
         }
     }
-
-    clearInterval(interval_timer);
-    interval_timer = setInterval(((last_time) => {
-        return ( () => {
-            let d = new Date();
-            let elapsed_m = d.getTime() - last_time;
-            let minutes = Math.floor(elapsed_m / (60 * 1000));
-            let seconds = Math.floor((elapsed_m % (60 * 1000)) / 1000);
-            let total = minutes * 60 + seconds;
-            if (total > 100) {
-                total = 100;
-            }
-            $("#elapsed").css("width", total + "%").attr("aria-valuenow", total);
-            let timestring = "" + seconds;
-            timestring = timestring.padStart(2, '0');
-            timestring = minutes + ":" + timestring;
-            if (total < 100) {
-                $("#elapsed").html(timestring);
-            }
-            else {
-                $("#elapsed").html("Time's up!");
-            }
-        });
-    })(payload.game.last_move_time), 1000);
-
-    $('#whitesum').html(whitesum);
-    $('#blacksum').html(blacksum);
     old_board = board;
-});
+})
 
 socket.on('play_token_response', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
         console.log('Server did not send a payload');
         return;
     }
-
     if (payload.result === 'fail') {
         console.log(payload.message);
         alert(payload.message);
         return;
     }
 });
-
 socket.on('game_over', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
         console.log('Server did not send a payload');
         return;
     }
-
     if (payload.result === 'fail') {
         console.log(payload.message);
         return;
