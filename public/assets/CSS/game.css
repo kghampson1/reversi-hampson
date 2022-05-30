@@ -1,5 +1,5 @@
 body { 
-    background-color: #dacdd4;
+    background-color: #FFEBEF;
 }
 
 .headerrow { 
@@ -35,7 +35,7 @@ table#game_board {
 
 table#game_board td {
     border: 1px solid black;
-    background-color: #6A994E;
+    background-color: #D1FFD8;
 }
 
 td.hovered_over:hover {

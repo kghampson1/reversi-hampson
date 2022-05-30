@@ -10,7 +10,7 @@ let port = process.env.PORT;
 let directory = __dirname + '/public';
 
 // If we aren't on Heroku, then we need to adjust our port and directory
-if ((typeof port == 'undefined') || (port === null)) {
+if((typeof port == 'undefined') || (port === null)) {
     port = 8080;
     directory = './public';
 }
@@ -19,9 +19,9 @@ if ((typeof port == 'undefined') || (port === null)) {
 let file = new static.Server(directory);
 
 let app = http.createServer(
-    function (request, response) {
+    function(request, response) {
         request.addListener('end',
-            function () {
+            function() {
                 file.serve(request, response);
             }
         ).resume();
@@ -135,7 +135,7 @@ io.on('connection', (socket) => {
                     io.of('/').to(room).emit('join_room_response', response);
                     serverLog('join_room_succeeded', JSON.stringify(response));
 
-                    if (room !== "Lobby") {
+                    if(room !== "Lobby") {
                         send_game_update(socket, room, 'initial update');
                     }
                 }
@@ -186,7 +186,7 @@ io.on('connection', (socket) => {
                 return;
             }
 
-            // Make sure that the invited player is preseent
+            // Make sure that the invited player is present
             io.in(room).allSockets().then((sockets) => {
                 // Invitee isn't in the room
                 if ((typeof sockets == 'undefined') || (sockets === null) || !sockets.has(requested_user)) {
@@ -200,13 +200,13 @@ io.on('connection', (socket) => {
                 // Invitee is in the room
                 else {
                     response = {
-                        result: 'success',
+                        result : 'success',
                         socket_id: requested_user,
                     }
                     socket.emit("invite_response", response);
 
                     response = {
-                        result: 'success',
+                        result : 'success',
                         socket_id: socket.id,
                     }
                     socket.to(requested_user).emit("invited", response);
@@ -272,7 +272,7 @@ io.on('connection', (socket) => {
                 // Uninvitee is in the room
                 else {
                     response = {
-                        result: 'success',
+                        result : 'success',
                         socket_id: requested_user,
                     }
                     socket.emit("uninvited", response);
@@ -345,7 +345,7 @@ io.on('connection', (socket) => {
                 else {
                     let game_id = Math.floor(1 + Math.random() * 0x100000).toString(16);
                     response = {
-                        result: 'success',
+                        result : 'success',
                         game_id: game_id,
                         socket_id: requested_user,
                     }
@@ -358,7 +358,7 @@ io.on('connection', (socket) => {
 
         socket.on('disconnect', () => {
             serverLog('a page disconnected from the server: ' + socket.id);
-            if ((typeof players[socket.id] != 'undefined') && (players[socket.id] != null)) {
+            if((typeof players[socket.id] != 'undefined') && (players[socket.id] != null)) {
                 let payload = {
                     username: players[socket.id].username,
                     room: players[socket.id].room,

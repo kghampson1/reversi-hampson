@@ -98,7 +98,7 @@ socket.on('invited', (payload) => {
     }
     let newNode = makePlayButton(payload.socket_id);
     $('.socket_' + payload.socket_id + ' button').replaceWith(newNode);
-})
+});
 
 socket.on('uninvited', (payload) => {
     if ((typeof payload == 'undefined') || (payload === null)) {
@@ -111,7 +111,7 @@ socket.on('uninvited', (payload) => {
     }
     let newNode = makeInviteButton(payload.socket_id);
     $('.socket_' + payload.socket_id + ' button').replaceWith(newNode);
-})
+});
 
 socket.on('game_start_response', (payload) => {
     if ((typeof payload == 'undefined') || (payload === null)) {
@@ -189,7 +189,7 @@ socket.on('join_room_response', (payload) => {
 
     $('#messages').prepend(newNode);
     newNode.show("fade", 500);
-})
+});
 
 socket.on('player_disconnected', (payload) => {
     if ((typeof payload == 'undefined') || (payload === null)) {
@@ -217,7 +217,7 @@ function sendChatMessage() {
     request.message = $('#chatMessage').val();
     console.log('**** Client log message, sending \'send_chat_message\' command: ' + JSON.stringify(request));
     socket.emit('send_chat_message', request);
-    $('#chatMessage').val(" ");
+    $('#chatMessage').val("");
 }
 
 socket.on('send_chat_message_response', (payload) => {
@@ -234,7 +234,7 @@ socket.on('send_chat_message_response', (payload) => {
     newNode.hide();
     $('#messages').prepend(newNode);
     newNode.show("fade", 500);
-})
+});
 
 let old_board = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -335,7 +335,7 @@ socket.on('game_update', (payload) => {
                     altTag = "black token";
                 } else if((old_board[row][column] === 'b') && (board[row][column] === 'w')) {
                     graphic = "black-to-white.gif";
-                    altTag = " token";
+                    altTag = "white token";
                 } else {
                     graphic = "error.gif";
                     altTag = "error";
@@ -370,7 +370,7 @@ socket.on('game_update', (payload) => {
     $('#whitesum').html(whitesum);
     $('#blacksum').html(blacksum);
     old_board = board;
-})
+});
 
 socket.on('play_token_response', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
