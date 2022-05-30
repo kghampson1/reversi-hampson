@@ -22,7 +22,7 @@ let app = http.createServer(
     function(request, response) {
         request.addListener('end',
             function() {
-                file.serve(request, response);
+                file.serve(request,response);
             }
         ).resume();
     }
@@ -591,7 +591,7 @@ io.on('connection', (socket) => {
             var d = new Date();
             new_game.last_move_time = d.getTime();
 
-            new_game.whose_turn = 'white';
+            new_game.whose_turn = 'black';
             new_game.board = [
                 [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
                 [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
