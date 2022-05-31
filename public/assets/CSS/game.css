@@ -42,3 +42,14 @@ td.hovered_over:hover {
     background-image: url('/assets/images/hover.gif');
 }
 
+/* Bootstrap overrides */
+.btn-outline-primary {
+    border-color: #3A5A40 !important;
+    color: #3A5A40 !important;
+}
+
+.btn-outline-primary:active,
+.btn-outline-primary:hover {
+    background-color: #3A5A40 !important;
+    color: #FFF !important;
+}
