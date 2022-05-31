@@ -15,7 +15,7 @@ let username = decodeURI(getIRIParameterValue('username'));
 if ((typeof username == 'undefined') || (username === null) || (username === 'null') || (username === "")) {
     username = "Anonymous_" + Math.floor(Math.random() * 1000);
 }
-let chatRoom = 'Lobby';
+
 chatRoom = decodeURI(getIRIParameterValue('game_id'));
 if ((typeof chatRoom == 'undefined') || (chatRoom === null) || (chatRoom === 'null')) {
     chatRoom = 'Lobby';
@@ -75,11 +75,11 @@ function makeStartGameButton() {
 }
 
 socket.on('invite_response', (payload) => {
-    if ((typeof payload == 'undefined') || (payload === null)) {
+    if((typeof payload == 'undefined') || (payload === null)) {
         console.log('Server did not send a payload');
         return;
     }
-    if (payload.result === 'fail') {
+    if(payload.result === 'fail') {
         console.log(payload.message);
         return;
     }
@@ -88,11 +88,11 @@ socket.on('invite_response', (payload) => {
 })
 
 socket.on('invited', (payload) => {
-    if ((typeof payload == 'undefined') || (payload === null)) {
+    if((typeof payload == 'undefined') || (payload === null)) {
         console.log('Server did not send a payload');
         return;
     }
-    if (payload.result === 'fail') {
+    if(payload.result === 'fail') {
         console.log(payload.message);
         return;
     }
@@ -101,11 +101,11 @@ socket.on('invited', (payload) => {
 });
 
 socket.on('uninvited', (payload) => {
-    if ((typeof payload == 'undefined') || (payload === null)) {
+    if((typeof payload == 'undefined') || (payload === null)) {
         console.log('Server did not send a payload');
         return;
     }
-    if (payload.result === 'fail') {
+    if(payload.result === 'fail') {
         console.log(payload.message);
         return;
     }
@@ -114,35 +114,35 @@ socket.on('uninvited', (payload) => {
 });
 
 socket.on('game_start_response', (payload) => {
-    if ((typeof payload == 'undefined') || (payload === null)) {
+    if((typeof payload == 'undefined') || (payload === null)) {
         console.log('Server did not send a payload');
         return;
     }
-    if (payload.result === 'fail') {
+    if(payload.result === 'fail') {
         console.log(payload.message);
         return;
     }
     let newNode = makeStartGameButton();
     $('.socket_' + payload.socket_id + ' button').replaceWith(newNode);
     /* Jump to the game page */
-    window.location.href = 'game.html?username='+username+'&game_id='+payload.game_id;
+    window.location.href = 'game.html?username=' + username + '&game_id=' + payload.game_id;
 });
 
 socket.on('join_room_response', (payload) => {
-    if ((typeof payload == 'undefined') || (payload === null)) {
+    if((typeof payload == 'undefined') || (payload === null)) {
         console.log('Server did not send a payload');
         return;
     }
-    if (payload.result === 'fail') {
+    if(payload.result === 'fail') {
         console.log(payload.message);
         return;
     }
     /*If we are being notified our ouselves then ignore the message and the return*/
-    if (payload.socket_id === socket.id) {
+    if(payload.socket_id === socket.id) {
         return;
     }
     let domElements = $('.socket_' + payload.socket_id);
-    /* If we are being repeat notified then return*/
+    /* If we are being repeatedly notified then return*/
     if (domElements.length !== 0) {
         return;
     }
@@ -183,7 +183,7 @@ socket.on('join_room_response', (payload) => {
 
     /*Announcing in the chat that someone has arrived*/
 
-    let newHTML = '<p class=\'join_room_response\'>' + payload.username + ' joined the chatroom. (There are ' + payload.count + ' users in this room)</p>';
+    let newHTML = '<p class=\'join_room_response\'>' + payload.username + ' joined the chatroom. (There are ' + payload.count + ' users in this room.)</p>';
     let newNode = $(newHTML);
     newNode.hide();
 
@@ -203,12 +203,12 @@ socket.on('player_disconnected', (payload) => {
     if (domElements.length !== 0) {
         domElements.hide("fade", 500);
     }
-    let newHTML = '<p class=\'left_room_response\'>' + payload.username + ' left the ' + payload.room + '. (There are ' + payload.count + ' users in this room)</p>';
+    let newHTML = '<p class=\'left_room_response\'>' + payload.username + ' left the chatroom. (There are ' + payload.count + ' users in this room.)</p>';
     let newNode = $(newHTML);
     newNode.hide();
     $('#messages').prepend(newNode);
     newNode.show("fade", 500);
-})
+});
 
 function sendChatMessage() {
     let request = {};
@@ -367,6 +367,31 @@ socket.on('game_update', (payload) => {
             }
         }
     }
+
+    clearInterval(interval_timer);
+    interval_timer = setInterval(((last_time) => {
+        return ( () => {
+            let d = new Date();
+            let elapsed_m = d.getTime() - last_time;
+            let minutes = Math.floor(elapsed_m / (60 * 1000));
+            let seconds = Math.floor((elapsed_m % (60 * 1000)) / 1000);
+            let total = minutes * 60 + seconds;
+            if (total > 100) {
+                total = 100;
+            }
+            $("#elapsed").css("width", total + "%").attr("aria-valuenow", total);
+            let timestring = "" + seconds;
+            timestring = timestring.padStart(2, '0');
+            timestring = minutes + ":" + timestring;
+            if (total < 100) {
+                $("#elapsed").html(timestring);
+            }
+            else {
+                $("#elapsed").html("Time's up!");
+            }
+        });
+    })(payload.game.last_move_time), 1000);
+
     $('#whitesum').html(whitesum);
     $('#blacksum').html(blacksum);
     old_board = board;
@@ -377,17 +402,20 @@ socket.on('play_token_response', (payload) => {
         console.log('Server did not send a payload');
         return;
     }
+
     if (payload.result === 'fail') {
         console.log(payload.message);
         alert(payload.message);
         return;
     }
 });
+
 socket.on('game_over', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
         console.log('Server did not send a payload');
         return;
     }
+
     if (payload.result === 'fail') {
         console.log(payload.message);
         return;
