@@ -11,7 +11,7 @@ function getIRIParameterValue(requestedKey) {
     }
     return null;
 }
-let chatRoom = 'Lobby';
+
 let username = decodeURI(getIRIParameterValue('username'));
 if ((typeof username == 'undefined') || (username === null) || (username === 'null') || (username === "")) {
     username = "Anonymous_" + Math.floor(Math.random() * 1000);
@@ -69,7 +69,7 @@ function makePlayButton(socket_id) {
     return newNode;
 }
 
-function makeStartButton() {
+function makeStartGameButton() {
     let newHTML = "<button type ='button' class='btn btn-danger'>Starting Game</button>";
     let newNode = $(newHTML);
     return newNode;
@@ -86,7 +86,7 @@ socket.on('invite_response', (payload) => {
     }
     let newNode = makeInvitedButton(payload.socket_id);
     $('.socket_' + payload.socket_id + ' button').replaceWith(newNode);
-})
+});
 
 socket.on('invited', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
@@ -99,7 +99,7 @@ socket.on('invited', (payload) => {
     }
     let newNode = makePlayButton(payload.socket_id);
     $('.socket_' + payload.socket_id + ' button').replaceWith(newNode);
-})
+});
 
 socket.on('uninvited', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
@@ -112,7 +112,7 @@ socket.on('uninvited', (payload) => {
     }
     let newNode = makeInviteButton(payload.socket_id);
     $('.socket_' + payload.socket_id + ' button').replaceWith(newNode);
-})
+});
 
 socket.on('game_start_response', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {

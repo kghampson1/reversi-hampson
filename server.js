@@ -36,7 +36,6 @@ console.log('The server is running');
 let players = [];
 
 const { Server } = require('socket.io');
-const { SocketAddress } = require('net');
 const io = new Server(app);
 
 io.on('connection', (socket) => {
@@ -187,9 +186,6 @@ io.on('connection', (socket) => {
                 return;
             }
 
-            /*Handle that command */
-            socket.join(room);
-
             // Make sure that the invited player is present
             io.in(room).allSockets().then((sockets) => {
                 // Invitee isn't in the room
@@ -214,7 +210,7 @@ io.on('connection', (socket) => {
                         socket_id: socket.id,
                     }
                     socket.to(requested_user).emit("invited", response);
-                    serverLog('invite command succeeded', JSON.stringify(response));
+                    serverLog('invite_command succeeded', JSON.stringify(response));
                 };
             });
         });
@@ -227,7 +223,7 @@ io.on('connection', (socket) => {
                 response.result = 'fail';
                 response.message = 'client did not send payload';
                 socket.emit('uninvited', response);
-                serverLog('uninvite command failed', JSON.stringify(response));
+                serverLog('uninvite_command failed', JSON.stringify(response));
                 return;
             }
 
@@ -240,7 +236,7 @@ io.on('connection', (socket) => {
                     message: 'client did not request a valid user to uninvite to play'
                 };
                 socket.emit('uninvited', response);
-                serverLog('uninvite command failed', JSON.stringify(response));
+                serverLog('uninvite_command failed', JSON.stringify(response));
                 return;
             }
             if ((typeof room == 'undefined') || (room === null) || (room === "")) {
@@ -249,7 +245,7 @@ io.on('connection', (socket) => {
                     message: 'the user that was uninvited is not in a room'
                 };
                 socket.emit('uninvited', response);
-                serverLog('uninvite command failed', JSON.stringify(response));
+                serverLog('uninvite_command failed', JSON.stringify(response));
                 return;
             }
             if ((typeof username == 'undefined') || (username === null) || (username === "")) {
@@ -258,12 +254,9 @@ io.on('connection', (socket) => {
                     message: 'the user that was uninvited does not have a name registered'
                 };
                 socket.emit('uninvited', response);
-                serverLog('uninvite command failed', JSON.stringify(response));
+                serverLog('uninvite_command failed', JSON.stringify(response));
                 return;
             }
-
-            /*Handle that command */
-            socket.join(room);
 
             // Make sure that the uninvited player is preseent
             io.in(room).allSockets().then((sockets) => {
@@ -289,7 +282,7 @@ io.on('connection', (socket) => {
                         socket_id: socket.id,
                     }
                     socket.to(requested_user).emit("uninvited", response);
-                    serverLog('uninvite command succeeded', JSON.stringify(response));
+                    serverLog('uninvite_command succeeded', JSON.stringify(response));
                 };
             });
         });
@@ -302,7 +295,7 @@ io.on('connection', (socket) => {
                 response.result = 'fail';
                 response.message = 'client did not send payload';
                 socket.emit('game_start_response', response);
-                serverLog('game_start command failed', JSON.stringify(response));
+                serverLog('game_start_command failed', JSON.stringify(response));
                 return;
             }
 
@@ -315,7 +308,7 @@ io.on('connection', (socket) => {
                     message: 'client did not request a valid user to engage in play'
                 };
                 socket.emit('game_start_response', response);
-                serverLog('game_start command failed', JSON.stringify(response));
+                serverLog('game_start_command failed', JSON.stringify(response));
                 return;
             }
             if ((typeof room == 'undefined') || (room === null) || (room === "")) {
@@ -324,7 +317,7 @@ io.on('connection', (socket) => {
                     message: 'the user that was engaged to play is not in a room'
                 };
                 socket.emit('game_start_response', response);
-                serverLog('game_start command failed', JSON.stringify(response));
+                serverLog('game_start_command failed', JSON.stringify(response));
                 return;
             }
             if ((typeof username == 'undefined') || (username === null) || (username === "")) {
@@ -333,7 +326,7 @@ io.on('connection', (socket) => {
                     message: 'the user that was engaged to play does not have a name registered'
                 };
                 socket.emit('game_start_response', response);
-                serverLog('game_start command failed', JSON.stringify(response));
+                serverLog('game_start_command failed', JSON.stringify(response));
                 return;
             }
 
@@ -349,7 +342,7 @@ io.on('connection', (socket) => {
                         message: 'the user that was engaged to play is no longer in the room'
                     };
                     socket.emit('game_start_response', response);
-                    serverLog('game_start command failed', JSON.stringify(response));
+                    serverLog('game_start_command failed', JSON.stringify(response));
                 }
                 // Engaged plauer is in the room
                 else {
@@ -361,7 +354,7 @@ io.on('connection', (socket) => {
                     }
                     socket.emit("game_start_response", response);
                     socket.to(requested_user).emit("game_start_response", response);
-                    serverLog('game_start command succeeded', JSON.stringify(response));
+                    serverLog('game_start_command succeeded', JSON.stringify(response));
                 };
             });
         });
@@ -416,7 +409,7 @@ io.on('connection', (socket) => {
                 response.result = 'fail';
                 response.message = 'client did not send payload';
                 socket.emit('send_chat_message_response', response);
-                serverLog('send_chat_message command failed', JSON.stringify(response));
+                serverLog('send_chat_message_command failed', JSON.stringify(response));
                 return;
             }
             let room = payload.room;
@@ -427,7 +420,7 @@ io.on('connection', (socket) => {
                 response.result = 'fail';
                 response.message = 'client did not send a valid room to message';
                 socket.emit('send_chat_message_response', response);
-                serverLog('send_chat_message command failed', JSON.stringify(response));
+                serverLog('send_chat_message_command failed', JSON.stringify(response));
                 return;
             }
             if ((typeof username == 'undefined') || (username === null)) {
@@ -435,7 +428,7 @@ io.on('connection', (socket) => {
                 response.result = 'fail';
                 response.message = 'client did not send a valid username as a message source';
                 socket.emit('send_chat_message_response', response);
-                serverLog('send_chat_message command failed', JSON.stringify(response));
+                serverLog('send_chat_message_command failed', JSON.stringify(response));
                 return;
             }
             if ((typeof message == 'undefined') || (message === null)) {
@@ -443,7 +436,7 @@ io.on('connection', (socket) => {
                 response.result = 'fail';
                 response.message = 'client did not send a valid message';
                 socket.emit('send_chat_message_response', response);
-                serverLog('send_chat_message command failed', JSON.stringify(response));
+                serverLog('send_chat_message_command failed', JSON.stringify(response));
                 return;
             }
 
@@ -468,7 +461,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'client did not send payload';
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
         let player = players[socket.id];
@@ -477,7 +470,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'play_token came from an unregistered player';
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
         let username = player.username;
@@ -486,7 +479,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'play_token command did not come from a registered username';
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
         let game_id = player.room;
@@ -495,7 +488,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid game associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
         let row = payload.row;
@@ -504,7 +497,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid row associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
         let column = payload.column;
@@ -513,7 +506,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid column associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
         let color = payload.color;
@@ -522,7 +515,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid color associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
         let game = games[game_id];
@@ -531,7 +524,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid game associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
 
@@ -542,7 +535,7 @@ io.on('connection', (socket) => {
                 message: 'play_token played the wrong color. It\'s not their turn'
             }
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
 
@@ -556,7 +549,7 @@ io.on('connection', (socket) => {
                 message: 'play_token played the right color, but by the wrong player'
             }
             socket.emit('play_token_response', response);
-            serverLog('play_token command failed', JSON.stringify(response));
+            serverLog('play_token_command failed', JSON.stringify(response));
             return;
         }
 
