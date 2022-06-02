@@ -11,6 +11,7 @@ function getIRIParameterValue(requestedKey) {
     }
     return null;
 }
+let chatRoom = 'Lobby';
 let username = decodeURI(getIRIParameterValue('username'));
 if ((typeof username == 'undefined') || (username === null) || (username === 'null') || (username === "")) {
     username = "Anonymous_" + Math.floor(Math.random() * 1000);
@@ -68,7 +69,7 @@ function makePlayButton(socket_id) {
     return newNode;
 }
 
-function makeStartGameButton() {
+function makeStartButton() {
     let newHTML = "<button type ='button' class='btn btn-danger'>Starting Game</button>";
     let newNode = $(newHTML);
     return newNode;
@@ -98,7 +99,7 @@ socket.on('invited', (payload) => {
     }
     let newNode = makePlayButton(payload.socket_id);
     $('.socket_' + payload.socket_id + ' button').replaceWith(newNode);
-});
+})
 
 socket.on('uninvited', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
@@ -111,7 +112,7 @@ socket.on('uninvited', (payload) => {
     }
     let newNode = makeInviteButton(payload.socket_id);
     $('.socket_' + payload.socket_id + ' button').replaceWith(newNode);
-});
+})
 
 socket.on('game_start_response', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
@@ -125,7 +126,7 @@ socket.on('game_start_response', (payload) => {
     let newNode = makeStartGameButton();
     $('.socket_' + payload.socket_id + ' button').replaceWith(newNode);
     /* Jump to the game page */
-    window.location.href = 'game.html?username=' + username + '&game_id=' + payload.game_id;
+    window.location.href = 'game.html?username='+username+'&game_id='+payload.game_id;
 });
 
 socket.on('join_room_response', (payload) => {
@@ -183,7 +184,7 @@ socket.on('join_room_response', (payload) => {
 
     /*Announcing in the chat that someone has arrived*/
 
-    let newHTML = '<p class=\'join_room_response\'>' + payload.username + ' joined the chatroom. (There are ' + payload.count + ' users in this room.)</p>';
+    let newHTML = '<p class=\'join_room_response\'>' + payload.username + ' joined the chatroom. (There are ' + payload.count + ' users in this room)</p>';
     let newNode = $(newHTML);
     newNode.hide();
 
@@ -206,9 +207,10 @@ socket.on('player_disconnected', (payload) => {
     let newHTML = '<p class=\'left_room_response\'>' + payload.username + ' left the chatroom. (There are ' + payload.count + ' users in this room.)</p>';
     let newNode = $(newHTML);
     newNode.hide();
+
     $('#messages').prepend(newNode);
     newNode.show("fade", 500);
-});
+})
 
 function sendChatMessage() {
     let request = {};
@@ -237,18 +239,17 @@ socket.on('send_chat_message_response', (payload) => {
 });
 
 let old_board = [
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+    ['?','?','?','?','?','?','?','?'],
+    ['?','?','?','?','?','?','?','?'],
+    ['?','?','?','?','?','?','?','?'],
+    ['?','?','?','?','?','?','?','?'],
+    ['?','?','?','?','?','?','?','?'],
+    ['?','?','?','?','?','?','?','?'],
+    ['?','?','?','?','?','?','?','?'],
+    ['?','?','?','?','?','?','?','?']
 ];
 
 let my_color = "";
-let interval_timer;
 
 socket.on('game_update', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
@@ -451,5 +452,5 @@ $( () => {
             $('button[id=chatButton]').click();
             return false;
         }
-    });
+    })
 });
