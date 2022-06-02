@@ -461,7 +461,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'client did not send payload';
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
         let player = players[socket.id];
@@ -470,7 +470,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'play_token came from an unregistered player';
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
         let username = player.username;
@@ -479,7 +479,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'play_token command did not come from a registered username';
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
         let game_id = player.room;
@@ -488,7 +488,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid game associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
         let row = payload.row;
@@ -497,7 +497,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid row associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
         let column = payload.column;
@@ -506,7 +506,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid column associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
         let color = payload.color;
@@ -515,7 +515,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid color associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
         let game = games[game_id];
@@ -524,7 +524,7 @@ io.on('connection', (socket) => {
             response.result = 'fail';
             response.message = 'There was no valid game associated with the play_token command';
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
 
@@ -535,7 +535,7 @@ io.on('connection', (socket) => {
                 message: 'play_token played the wrong color. It\'s not their turn'
             }
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
 
@@ -549,7 +549,7 @@ io.on('connection', (socket) => {
                 message: 'play_token played the right color, but by the wrong player'
             }
             socket.emit('play_token_response', response);
-            serverLog('play_token_command failed', JSON.stringify(response));
+            serverLog('play_token command failed', JSON.stringify(response));
             return;
         }
 
@@ -564,6 +564,7 @@ io.on('connection', (socket) => {
             flip_tokens('w', row, column, game.board);
             game.whose_turn = 'black';
             game.legal_moves = calculate_legal_moves('b', game.board);
+
         } else if(color === 'black') {
             game.board[row][column] = 'b';
             flip_tokens('b', row, column, game.board);
@@ -606,7 +607,7 @@ io.on('connection', (socket) => {
                 [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
             ];
 
-            new_game.legal_moves = calculate_legal_moves ('d', new_game.board);
+            new_game.legal_moves = calculate_legal_moves ('b', new_game.board);
 
             return new_game;
         }
@@ -620,7 +621,7 @@ io.on('connection', (socket) => {
                 return false;
             }
         
-            // Check to make sure we aren't going playing off the board
+            // Check to make sure we aren't falling off the board
             if((r + dr < 0) || (r + dr > 7)) {
                 return false;
             }
@@ -821,10 +822,10 @@ io.on('connection', (socket) => {
                 if(games[game_id].legal_moves[row][column] !== ' ') {
                     legal_moves++
                 }
-                if(games[game_id].board[row][column] === 'l') {
+                if(games[game_id].board[row][column] === 'w') {
                     whitesum++;
                 }
-                if(games[game_id].board[row][column] === 'd') {
+                if(games[game_id].board[row][column] === 'b') {
                     blacksum++;
                 }
             }

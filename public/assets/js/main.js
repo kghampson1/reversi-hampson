@@ -239,17 +239,18 @@ socket.on('send_chat_message_response', (payload) => {
 });
 
 let old_board = [
-    ['?','?','?','?','?','?','?','?'],
-    ['?','?','?','?','?','?','?','?'],
-    ['?','?','?','?','?','?','?','?'],
-    ['?','?','?','?','?','?','?','?'],
-    ['?','?','?','?','?','?','?','?'],
-    ['?','?','?','?','?','?','?','?'],
-    ['?','?','?','?','?','?','?','?'],
-    ['?','?','?','?','?','?','?','?']
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
 ];
 
 let my_color = "";
+let interval_timer;
 
 socket.on('game_update', (payload) => {
     if((typeof payload == 'undefined') || (payload === null)) {
@@ -283,7 +284,7 @@ socket.on('game_update', (payload) => {
     } else if(my_color === 'black') {
         $('#my_color').html('<h3 id="my_color">You are playing the black token</h3>');
     } else {
-        $('#my_color').html('<h3 id="my_color">Error: Unknown color token for play</h3>');
+        $('#my_color').html('<h3 id="my_color">Error: I do not know what color I am</h3>');
     }
 
     if(payload.game.whose_turn === 'white') {
@@ -351,7 +352,7 @@ socket.on('game_update', (payload) => {
             $('#' + row + '_' + column).removeClass('hovered_over');
             
             if (payload.game.whose_turn === my_color) {
-                if (payload.game.legal_moves[row][column] === my_color.substr(0, 1)) {
+                if (payload.game.legal_moves[row][column] === my_color.substring(0, 1)) {
                     $('#' + row + '_' + column).addClass('hovered_over');
                     $('#' + row + '_' + column).click(((r, c) => {
                         return(() => {
