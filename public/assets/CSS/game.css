@@ -8,7 +8,7 @@ body {
 
   .join_room_response,
   .left_room_response {
-    background-color: rgb(247, 247, 247);
+    background-color: #f7f7f7;
   }
 
   .chat_message {
