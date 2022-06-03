@@ -349,7 +349,9 @@ socket.on('game_update', (payload) => {
             }
             /* Set up interactivity */
             $('#' + row + '_' + column).off('click');
-            $('#' + row + '_' + column).removeClass('hovered_over');
+            if (board[row][column] === ' '){
+            $('#' + row + '_' + column).addClass('hovered_over');
+            }
             
             if (payload.game.whose_turn === my_color) {
                 if (payload.game.legal_moves[row][column] === my_color.substring(0, 1)) {
